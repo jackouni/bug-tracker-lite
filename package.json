@@ -1,0 +1,23 @@
+{
+  "name": "bug-tracker-lite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackouni/bug-tracker-lite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackouni/bug-tracker-lite/issues"
+  },
+  "homepage": "https://github.com/jackouni/bug-tracker-lite#readme",
+  "devDependencies": {
+    "cypress": "^15.3.0"
+  }
+}
