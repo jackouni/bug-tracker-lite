@@ -7,34 +7,27 @@ require 'bcrypt'
 require 'pg'
 require 'date'
 
-require_relative 'database_persistence'
-
-helpers TimeHandling
+require_relative 'config/db_connection'
+require_relative '../db/db_setup'
 
 configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => true
+
   DatabaseSetup.db_setup
-  also_reload 'database_persistence.rb'
+  DatabaseConnection.connection
+  also_reload 'config/db_connection.rb'
+  also_reload 'models/*.rb'
 end
 
 before do
-  @db = DatabasePersistence.new(logger)
-  
-  requested_path = request.path_info
-  if !LOGIN_PATHS.include?(requested_path) && session[:user].nil?
-    session[:redirect_url] = requested_path
-    session[:error] = ['You need to login or sign up to view this page.']
-    redirect '/login'
-  end
 end
 
 # ROUTES
 
 # INDEX PAGE:
 get '/' do
-  redirect '/projects' if session[:user]
   erb :home
 end
 
@@ -52,6 +45,7 @@ end
 
 # GET LOGIN PAGE:
 get '/login' do
+  erb :login
 end
 
 # POST LOGIN CREDENTIALS:

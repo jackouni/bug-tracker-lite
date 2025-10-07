@@ -1,3 +1,5 @@
+require_relative "../config/database_connection"
+
 class Project
   attr_reader :id, :title, :description, :status, :deadline
 
@@ -10,12 +12,18 @@ class Project
   def self.find(id)
   end
 
+  def self.all
+  end
+
   def initialize(id, title, description, status, deadline = nil)
     @id = id
     @title = title
     @description = description
     @status = status
     @deadline = deadline
+  end
+  
+  def save
   end
 
   def to_h
@@ -24,7 +32,10 @@ class Project
       title: title,
       description: description,
       status: status,
-      project_id: project_id
+      deadline: deadline
     }
+  end
+
+  def bugs
   end
 end

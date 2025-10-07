@@ -1,3 +1,5 @@
+require_relative "../config/database_connection"
+
 class Bug
   attr_reader :id, :title, :description, :status, :project_id, :deadline
 
@@ -8,6 +10,9 @@ class Bug
   end
 
   def self.find(id)
+  end
+
+  def self.all
   end
 
   def initialize(id, title, description, status, project_id, deadline = nil)
