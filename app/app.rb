@@ -9,6 +9,8 @@ require 'date'
 
 require_relative 'config/db_connection'
 require_relative '../db/db_setup'
+require_relative 'models/bug'
+require_relative 'models/project'
 
 configure do
   enable :sessions
@@ -33,6 +35,8 @@ end
 
 # LOG OUT:
 get '/logout' do
+  session.delete(:user)
+  redirect '/login'
 end
 
 # GET SIGN UP PAGE:
@@ -45,15 +49,33 @@ end
 
 # GET LOGIN PAGE:
 get '/login' do
+  session.delete(:user)
   erb :login
 end
 
 # POST LOGIN CREDENTIALS:
 post '/login' do
+  username = params[:username]
+  password_attempt = params[:password]
+
+  errors = login_error(username, password_attempt)
+  if errors.any?
+    session[:error] = errors
+    erb :login, layout: :layout
+  else
+    session[:success] = 'Welcome back!'
+    session[:user] = @db.find_user_by_username(username)
+    requested_url = session[:redirect_url]
+
+    redirect requested_url if requested_url
+    
+    redirect "/projects"
+  end
 end
 
 # GET USER PROJECTS PAGE:
 get '/projects' do
+
 end
 
 # GET NEW PROJECT FORM:

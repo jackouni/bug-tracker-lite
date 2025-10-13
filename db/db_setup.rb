@@ -9,19 +9,19 @@ module DatabaseSetup
   
   private
 
-  def create_db
-    sql = "CREATE DATABASE bug-tracker-lite"
+  def self.create_db
+    sql = "CREATE DATABASE \"bug-tracker-lite\""
     postgres = self.connect
     postgres.exec(sql)
-    self.log(sql)
+    log sql
     postgres.close
   end
 
   def self.setup_schema
-    schema_sql = File.read('schema.sql')
-    db = connect('bug-tracker-lite')
+    schema_sql = File.read('db/schema.sql')
+    db = PG.connect(dbname: 'bug-tracker-lite')
     db.exec(schema_sql)
-    log "Executed schema.sql"
+    log schema_sql
     db.close
   end
 
