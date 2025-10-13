@@ -1,12 +1,18 @@
-# Schema
+# Schema Planning
 
-## Conceptual ERD:
+## Entity Relationship Diagrams
+
+### Conceptual ERD
 
 ![Conceptual Entity Relationship Diagram For Database](ERDs/conceptual.png)
 
-## Physical ERD:
+### Physical ERD
 
 ![Physical Entity Relationship Diagram For Database](ERDs/physical.png)
+
+---
+
+## Tables
 
 ### Users Table
 
@@ -52,7 +58,12 @@
 ### Relationships
 
 - **Users → Projects**: One-to-Many
-- **Projects → Bugs**: One-to-Many (One project can have multiple bugs)
+  - **ON DELETE CASCADE**: Deleting a user deletes all their projects
+  - Foreign Key: `projects.user_id` references `users.id`
+
+- **Projects → Bugs**: One-to-Many
+  - Foreign Key: `bugs.project_id` references `projects.id`
+  - **ON DELETE CASCADE**: Deleting a project deletes all its bugs
 
 ### Indexes
 ```sql
@@ -66,3 +77,42 @@ CREATE INDEX idx_bugs_is_pinned ON bugs(is_pinned);
 -- Unique constraint for email:
 CREATE UNIQUE INDEX idx_users_email ON users(email);
 ```
+
+---
+
+## Data Validation:
+
+### Valid Bug `status` Values
+
+- `open` - Bug is newly reported (default)
+- `in_progress` - Bug is currently being worked on
+- `resolved` - Bug has been fixed
+- `closed` - Bug is verified and closed
+- `wont_fix` - Bug will not be addressed
+
+### Valid Project & Bug `priority` Values
+
+- `low`
+- `medium`
+- `high`
+- `critical`
+
+### All `VARCHAR` Properties
+
+- Inputs **must** contain at least 1 non-whitespace character
+- Leading and trailing whitespaces removed before submission
+- 2 or more consecutive whitespaces within an input (not including trailing and leading whitespace) will be reduced to a single whitespace before submission
+
+---
+
+## Default Project For ALL Users:
+
+A default project is created for **all** users, "Misc". This project is meant to house bugs that have no project they've been assigned to.
+
+### Business Rules:
+
+- Upon creation of a User entity, a Project entity, titled "Misc", is created for that User
+- Bugs with no `project_id` given will by default be placed in the "Misc" Project (logic for this is done in app, not through column constraints)
+- "Misc" **cannot** be deleted by a User
+- Properties of "Misc" **cannot** be edited by a User (with the exception of `is_pinned`)
+- "Misc" is pinned by default (`is_pinned = true`)
